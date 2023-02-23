@@ -41,8 +41,13 @@ class SquidSofa(SofaEnvironment):
         plugins = ['Sofa.Component.ODESolver', 'Sofa.Component.LinearSolver', 'Sofa.Component.IO.Mesh',
                    'Sofa.Component.Mass', 'Sofa.Component.SolidMechanics.FEM.Elastic',
                    'Sofa.Component.Engine.Select', 'Sofa.Component.Constraint.Lagrangian.Correction',
-                   'Sofa.GL.Component.Rendering3D', 'SoftRobots']
+                   'Sofa.GL.Component.Rendering3D', 'Sofa.Component.Constraint.Lagrangian.Solver',
+                   'Sofa.Component.AnimationLoop', 'SoftRobots']
         self.root.addObject('RequiredPlugin', pluginName=plugins)
+
+        self.root.gravity.value = [0., 0., 0.]
+        self.root.addObject('GenericConstraintSolver')
+        self.root.addObject('FreeMotionAnimationLoop')
 
         # Scene visual style
         self.root.addObject('VisualStyle', displayFlags="showVisualModels showWireframe")
@@ -166,6 +171,6 @@ class SquidSofa(SofaEnvironment):
         Called within the Sofa pipeline at the beginning of the time step. Define force vector.
         """
 
-        cable = self.cables[-1]
-        cable.displacement.value += 1
+        cable = self.cables[1]
+        cable.value.value = [cable.value.value[0] + 0.1]
         print("End effector position = ", self.effector.position.value[0])
